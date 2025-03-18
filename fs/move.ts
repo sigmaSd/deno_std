@@ -1,8 +1,9 @@
 // Copyright 2018-2025 the Deno authors. MIT license.
 import { isSubdir } from "./_is_subdir.ts";
 import { isSamePath } from "./_is_same_path.ts";
+import * as errors from "./unstable_errors.js";
 
-const EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
+const EXISTS_ERROR = new errors.AlreadyExists("dest already exists.");
 
 /** Options for {@linkcode move} and {@linkcode moveSync}. */
 export interface MoveOptions {

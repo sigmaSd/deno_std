@@ -70,9 +70,11 @@ export function* readDirSync(path: string | URL): Iterable<DirEntry> {
   } else {
     try {
       const dir = getNodeFs().opendirSync(path);
-      for (const entry of dir) {
-        yield toDirEntry(entry);
+      let dirent;
+      while ((dirent = dir.readSync()) !== null) {
+        yield toDirEntry(dirent);
       }
+      dir.closeSync();
     } catch (error) {
       throw mapError(error);
     }
