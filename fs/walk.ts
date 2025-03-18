@@ -10,6 +10,13 @@ import {
   type WalkEntry,
 } from "./_create_walk_entry.ts";
 
+import { readDir, readDirSync } from "@std/fs/unstable-read-dir";
+import {
+  realPath as stdRealPath,
+  realPathSync,
+} from "@std/fs/unstable-real-path";
+import { lstat, lstatSync } from "@std/fs/unstable-lstat";
+
 function include(
   path: string,
   exts?: string[],
@@ -477,7 +484,7 @@ export async function* walk(
   if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
     return;
   }
-  for await (const entry of Deno.readDir(root)) {
+  for await (const entry of readDir(root)) {
     let path = join(root, entry.name);
 
     let { isSymlink, isDirectory } = entry;
@@ -489,14 +496,14 @@ export async function* walk(
         }
         continue;
       }
-      const realPath = await Deno.realPath(path);
+      const realPath = await stdRealPath(path);
       if (canonicalize) {
         path = realPath;
       }
       // Caveat emptor: don't assume |path| is not a symlink. realpath()
       // resolves symlinks but another process can replace the file system
       // entity with a different type of entity before we call lstat().
-      ({ isSymlink, isDirectory } = await Deno.lstat(realPath));
+      ({ isSymlink, isDirectory } = await lstat(realPath));
     }
 
     if (isSymlink || isDirectory) {
@@ -906,7 +913,7 @@ export function* walkSync(
   if (maxDepth < 1 || !include(root, undefined, undefined, skip)) {
     return;
   }
-  const entries = Deno.readDirSync(root);
+  const entries = readDirSync(root);
   for (const entry of entries) {
     let path = join(root, entry.name);
 
@@ -919,14 +926,14 @@ export function* walkSync(
         }
         continue;
       }
-      const realPath = Deno.realPathSync(path);
+      const realPath = realPathSync(path);
       if (canonicalize) {
         path = realPath;
       }
       // Caveat emptor: don't assume |path| is not a symlink. realpath()
       // resolves symlinks but another process can replace the file system
       // entity with a different type of entity before we call lstat().
-      ({ isSymlink, isDirectory } = Deno.lstatSync(realPath));
+      ({ isSymlink, isDirectory } = lstatSync(realPath));
     }
 
     if (isSymlink || isDirectory) {

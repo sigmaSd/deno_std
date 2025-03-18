@@ -4,6 +4,7 @@
 import { basename } from "@std/path/basename";
 import { normalize } from "@std/path/normalize";
 import { toPathString } from "./_to_path_string.ts";
+import { stat, statSync } from "@std/fs/unstable-stat";
 
 /**
  * Walk entry for {@linkcode walk}, {@linkcode walkSync},
@@ -19,7 +20,7 @@ export function createWalkEntrySync(path: string | URL): WalkEntry {
   path = toPathString(path);
   path = normalize(path);
   const name = basename(path);
-  const info = Deno.statSync(path);
+  const info = statSync(path);
   return {
     path,
     name,
@@ -34,7 +35,7 @@ export async function createWalkEntry(path: string | URL): Promise<WalkEntry> {
   path = toPathString(path);
   path = normalize(path);
   const name = basename(path);
-  const info = await Deno.stat(path);
+  const info = await stat(path);
   return {
     path,
     name,

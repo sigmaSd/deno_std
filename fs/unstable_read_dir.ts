@@ -41,3 +41,40 @@ export async function* readDir(path: string | URL): AsyncIterable<DirEntry> {
     }
   }
 }
+
+/** Reads the directory given by `path` and returns an async iterable of
+ * {@linkcode DirEntry}. The order of entries is not guaranteed.
+ *
+ * @example Usage
+ * ```ts no-assert
+ * import { readDirSync } from "@std/fs/unstable-read-dir";
+ *
+ * for (const dirEntry of readDirSync("/")) {
+ *   console.log(dirEntry.name);
+ * }
+ * ```
+ *
+ * Throws error if `path` is not a directory.
+ *
+ * Requires `allow-read` permission.
+ *
+ * @tags allow-read
+ * @category File System
+ *
+ * @param path The path to the directory to read.
+ * @returns An iterable of {@linkcode DirEntry}.
+ */
+export function* readDirSync(path: string | URL): Iterable<DirEntry> {
+  if (isDeno) {
+    yield* Deno.readDirSync(path);
+  } else {
+    try {
+      const dir = getNodeFs().opendirSync(path);
+      for (const entry of dir) {
+        yield toDirEntry(entry);
+      }
+    } catch (error) {
+      throw mapError(error);
+    }
+  }
+}
