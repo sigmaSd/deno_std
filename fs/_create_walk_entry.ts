@@ -4,7 +4,7 @@
 import { basename } from "@std/path/basename";
 import { normalize } from "@std/path/normalize";
 import { toPathString } from "./_to_path_string.ts";
-import { stat, statSync } from "@std/fs/unstable-stat";
+import { stat, statSync } from "./unstable_stat.ts";
 
 /**
  * Walk entry for {@linkcode walk}, {@linkcode walkSync},

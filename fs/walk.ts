@@ -10,12 +10,9 @@ import {
   type WalkEntry,
 } from "./_create_walk_entry.ts";
 
-import { readDir, readDirSync } from "@std/fs/unstable-read-dir";
-import {
-  realPath as stdRealPath,
-  realPathSync,
-} from "@std/fs/unstable-real-path";
-import { lstat, lstatSync } from "@std/fs/unstable-lstat";
+import { readDir, readDirSync } from "./unstable_read_dir.ts";
+import { realPath as stdRealPath, realPathSync } from "./unstable_real_path.ts";
+import { lstat, lstatSync } from "./unstable_lstat.ts";
 
 function include(
   path: string,
